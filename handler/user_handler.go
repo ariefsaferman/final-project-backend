@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 
+	"git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/constant"
 	"git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/dto"
 	errResp "git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/utils/errors"
 	"git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/utils/response"
@@ -18,7 +19,27 @@ func (h *Handler) Login(c *gin.Context) {
 		return
 	}
 
-	res, err := h.userUsecase.Login(req)
+	res, err := h.userUsecase.Login(req, constant.USER_ID)
+	if err != nil {
+		if errors.Is(err, errResp.ErrUserNotFound) || errors.Is(err, errResp.ErrWrongPassword){
+			response.SendError(c, http.StatusBadRequest, errResp.ErrCodeBadRequest, err.Error())
+			return
+		}
+		response.SendError(c, http.StatusInternalServerError, errResp.ErrCodeInternalServerError, errResp.ErrInternalServerError.Error())
+		return 
+	}
+	response.SendSuccess(c, http.StatusOK, res)
+}
+
+func (h *Handler) AdminLogin(c *gin.Context) {
+	var req dto.LoginRequest
+	err := c.ShouldBindJSON(&req) 
+	if err != nil {
+		response.SendError(c, http.StatusBadRequest, errResp.ErrCodeBadRequest, errResp.ErrInvalidBody.Error())
+		return
+	}
+
+	res, err := h.userUsecase.AdminLogin(req, constant.ADMIN_ID)
 	if err != nil {
 		if errors.Is(err, errResp.ErrUserNotFound) || errors.Is(err, errResp.ErrWrongPassword){
 			response.SendError(c, http.StatusBadRequest, errResp.ErrCodeBadRequest, err.Error())

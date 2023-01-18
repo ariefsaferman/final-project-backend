@@ -2,11 +2,12 @@ package repository
 
 import (
 	"git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/entity"
+	"git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/utils/errors"
 	"gorm.io/gorm"
 )
 
 type UserRepository interface {
-	FindByEmail(email string) (*entity.User, error)
+	FindByEmailAndRole(email string, id int) (*entity.User, error)
 }
 
 type userRepositoryImpl struct {
@@ -23,11 +24,11 @@ func NewUserRepository(config *UserRConfig) UserRepository {
 	}
 }
 
-func (r *userRepositoryImpl) FindByEmail(email string) (*entity.User, error) {
+func (r *userRepositoryImpl) FindByEmailAndRole(email string, id int) (*entity.User, error) {
 	var user entity.User
-	err := r.db.Where("email = ?", email).First(&user).Error
+	err := r.db.Where("email = ?", email).Where("role_id = ?", id).First(&user).Error
 	if err != nil {
-		return nil, err
+		return nil, errors.ErrUserNotFound
 	}
 	return &user, nil
 }

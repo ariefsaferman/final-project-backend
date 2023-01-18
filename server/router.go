@@ -16,7 +16,11 @@ func NewRouter(cfg *RouterConfig) *gin.Engine {
 		UserUsecase: cfg.UserUseCase,
 	})
 
-	
+	admin := r.Group("/admin")
+	{
+		admin.POST("/login", h.AdminLogin)
+	}
+
 	r.POST("/login", h.Login)
 	return r
 }

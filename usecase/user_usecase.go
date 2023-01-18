@@ -8,7 +8,8 @@ import (
 )
 
 type UserUsecase interface {
-	Login(req dto.LoginRequest) (*dto.LoginResponse, error)
+	Login(req dto.LoginRequest, id int) (*dto.LoginResponse, error)
+	AdminLogin(req dto.LoginRequest, id int) (*dto.LoginResponse, error)
 } 
 
 type userUsecaseImpl struct {
@@ -28,8 +29,26 @@ func NewUserUsecase(config *UserUConfig) UserUsecase {
 	}
 }
 
-func (u *userUsecaseImpl) Login(req dto.LoginRequest) (*dto.LoginResponse, error) {
-	user, err := u.userRepo.FindByEmail(req.Email)
+func (u *userUsecaseImpl) Login(req dto.LoginRequest, id int) (*dto.LoginResponse, error) {
+	user, err := u.userRepo.FindByEmailAndRole(req.Email, id)
+	if err != nil {
+		return nil, err 
+	}
+
+	if ok := u.bcryptUseCase.ComparePasswords(user.Password, req.Password); !ok {
+		return nil, errors.ErrWrongPassword
+	}
+
+	accessToken := u.bcryptUseCase.GenerateToken(*user) 
+	if accessToken.AccessToken == "" {
+		return nil, errors.ErrFailedToGenerateToken
+	}
+
+	return &accessToken, nil
+}
+
+func (u *userUsecaseImpl) AdminLogin(req dto.LoginRequest, id int) (*dto.LoginResponse, error) {
+	user, err := u.userRepo.FindByEmailAndRole(req.Email, id)
 	if err != nil {
 		return nil, err 
 	}
