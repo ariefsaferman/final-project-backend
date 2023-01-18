@@ -8,6 +8,7 @@ import (
 
 type UserRepository interface {
 	FindByEmailAndRole(email string, id int) (*entity.User, error)
+	Register(user entity.User) (string, error)
 }
 
 type userRepositoryImpl struct {
@@ -22,6 +23,31 @@ func NewUserRepository(config *UserRConfig) UserRepository {
 	return &userRepositoryImpl{
 		db: config.DB,
 	}
+}
+
+func (r *userRepositoryImpl) createWallet(id uint) error {
+	err := r.db.Create(&entity.Wallet{UserID: id}).Error
+	if err != nil {
+		return errors.ErrFailedToCreateWallet
+	}
+	return nil
+}
+
+func (r *userRepositoryImpl) Register(user entity.User) (string, error) {
+	user.RoleID = 2; 
+	err := r.db.Create(&user).Error
+	if err != nil {
+		return "", errors.ErrFailedToRegister
+	}
+
+	id := user.ID
+	message := "successfuly register user"
+	err = r.createWallet(id)
+	if err != nil {
+		return "", err
+	}
+
+	return message, nil
 }
 
 func (r *userRepositoryImpl) FindByEmailAndRole(email string, id int) (*entity.User, error) {

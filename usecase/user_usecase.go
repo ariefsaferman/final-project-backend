@@ -10,6 +10,7 @@ import (
 type UserUsecase interface {
 	Login(req dto.LoginRequest, id int) (*dto.LoginResponse, error)
 	AdminLogin(req dto.LoginRequest, id int) (*dto.LoginResponse, error)
+	Register(req dto.RegisterRequest) (string, error)
 } 
 
 type userUsecaseImpl struct {
@@ -27,6 +28,22 @@ func NewUserUsecase(config *UserUConfig) UserUsecase {
 		userRepo:     config.UserRepo,
 		bcryptUseCase: config.BcryptUseCase,
 	}
+}
+
+func (u *userUsecaseImpl) Register(req dto.RegisterRequest) (string, error) {
+	userRegister := req.ReqToUser() 
+	userRegister.Password = u.bcryptUseCase.HashAndSalt(req.Password)
+	if len(userRegister.Password) == 0 {
+		return "", errors.ErrFailedToHashPassword
+	}
+
+	msg, err := u.userRepo.Register(userRegister)
+	if err != nil {
+		return "", err
+	}
+
+
+	return msg, nil
 }
 
 func (u *userUsecaseImpl) Login(req dto.LoginRequest, id int) (*dto.LoginResponse, error) {

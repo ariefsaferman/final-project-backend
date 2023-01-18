@@ -16,4 +16,8 @@ var (
 	ErrInternalServerError = errors.New("internal server error")
 	ErrBadHeader = errors.New("bad header")
 	ErrIncorrectFormatHeader = errors.New("incorrect format header")
+	ErrUserAlreadyExist = errors.New("user already exist")
+	ErrFailedToHashPassword = errors.New("failed to hash password")
+	ErrFailedToRegister = errors.New("failed to register")
+	ErrFailedToCreateWallet = errors.New("failed to create wallet")
 )
