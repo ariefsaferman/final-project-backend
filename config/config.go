@@ -1,6 +1,10 @@
 package config
 
-import "os"
+import (
+	"os"
+
+	_ "github.com/joho/godotenv/autoload"
+)
 
 type dbConfig struct {
 	Host     string
@@ -28,4 +32,5 @@ var (
 		DBName:   getENV("DB_NAME", ""),
 		Port:     getENV("DB_PORT", ""),
 	}
+	SecretKey = getENV("SECRET_KEY", "")
 )

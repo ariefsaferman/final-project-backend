@@ -1,10 +1,22 @@
 package server
 
-import "github.com/gin-gonic/gin"
+import (
+	"git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/handler"
+	"git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/usecase"
+	"github.com/gin-gonic/gin"
+)
 
-type RouterConfig struct {}
+type RouterConfig struct {
+	UserUseCase usecase.UserUsecase
+}
 
-func NewRouter (cfg *RouterConfig) *gin.Engine {
+func NewRouter(cfg *RouterConfig) *gin.Engine {
 	r := gin.Default()
+	h := handler.NewHandler(&handler.Config{
+		UserUsecase: cfg.UserUseCase,
+	})
+
+	
+	r.POST("/login", h.Login)
 	return r
 }
