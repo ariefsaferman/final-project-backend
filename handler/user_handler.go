@@ -2,6 +2,7 @@ package handler
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 
 	"git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/constant"
@@ -9,6 +10,7 @@ import (
 	errResp "git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/utils/errors"
 	"git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/utils/response"
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator"
 )
 
 func (h *Handler) Register(c *gin.Context) {
@@ -16,6 +18,12 @@ func (h *Handler) Register(c *gin.Context) {
 	err := c.ShouldBindJSON(&req)
 	if err != nil {
 		response.SendError(c, http.StatusBadRequest, errResp.ErrCodeBadRequest, errResp.ErrInvalidBody.Error())
+		return
+	}
+
+	v := validator.New()
+	if errValidator := v.Struct(req); errValidator != nil {
+		response.SendError(c, http.StatusBadRequest, errResp.ErrCodeBadRequest, errValidator.Error())
 		return
 	}
 
@@ -62,6 +70,48 @@ func (h *Handler) AdminLogin(c *gin.Context) {
 	res, err := h.userUsecase.AdminLogin(req, constant.ADMIN_ID)
 	if err != nil {
 		if errors.Is(err, errResp.ErrUserNotFound) || errors.Is(err, errResp.ErrWrongPassword) {
+			response.SendError(c, http.StatusBadRequest, errResp.ErrCodeBadRequest, err.Error())
+			return
+		}
+		response.SendError(c, http.StatusInternalServerError, errResp.ErrCodeInternalServerError, errResp.ErrInternalServerError.Error())
+		return
+	}
+	response.SendSuccess(c, http.StatusOK, res)
+}
+
+func (h *Handler) GetProfile(c *gin.Context) {
+	userID := c.GetInt("userID")
+	fmt.Println("userID: ", userID)
+	res, err := h.userUsecase.GetProfile(userID)
+	if err != nil {
+		if errors.Is(err, errResp.ErrUserNotFound) {
+			response.SendError(c, http.StatusBadRequest, errResp.ErrCodeBadRequest, err.Error())
+			return
+		}
+		response.SendError(c, http.StatusInternalServerError, errResp.ErrCodeInternalServerError, errResp.ErrInternalServerError.Error())
+		return
+	}
+	response.SendSuccess(c, http.StatusOK, res)
+}
+
+func (h *Handler) UpdateProfile(c *gin.Context) {
+	var req dto.UpdateRequest
+	err := c.ShouldBindJSON(&req)
+	if err != nil {
+		response.SendError(c, http.StatusBadRequest, errResp.ErrCodeBadRequest, errResp.ErrInvalidBody.Error())
+		return
+	}
+
+	v := validator.New()
+	if errValidator := v.Struct(req); errValidator != nil {
+		response.SendError(c, http.StatusBadRequest, errResp.ErrCodeBadRequest, errValidator.Error())
+		return
+	}
+
+	userID := c.GetInt("userID")
+	res, err := h.userUsecase.UpdateProfile(req, userID)
+	if err != nil {
+		if errors.Is(err, errResp.ErrUserNotFound) {
 			response.SendError(c, http.StatusBadRequest, errResp.ErrCodeBadRequest, err.Error())
 			return
 		}

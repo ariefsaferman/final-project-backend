@@ -1,6 +1,7 @@
 package repository
 
 import (
+
 	"git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/entity"
 	"git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/utils/errors"
 	"gorm.io/gorm"
@@ -9,6 +10,8 @@ import (
 type UserRepository interface {
 	FindByEmailAndRole(email string, id int) (*entity.User, error)
 	Register(user entity.User) (string, error)
+	GetProfile(id int) (*entity.User, error)
+	UpdateProfile(user entity.User) (string, error)
 }
 
 type userRepositoryImpl struct {
@@ -34,7 +37,10 @@ func (r *userRepositoryImpl) createWallet(id uint) error {
 }
 
 func (r *userRepositoryImpl) Register(user entity.User) (string, error) {
-	user.RoleID = 2; 
+	user.RoleID = 2
+
+	
+
 	err := r.db.Create(&user).Error
 	if err != nil {
 		return "", errors.ErrFailedToRegister
@@ -57,4 +63,24 @@ func (r *userRepositoryImpl) FindByEmailAndRole(email string, id int) (*entity.U
 		return nil, errors.ErrUserNotFound
 	}
 	return &user, nil
+}
+
+
+func (r *userRepositoryImpl) GetProfile(id int) (*entity.User, error) {
+	var user entity.User
+	err := r.db.Preload("Wallet").Where("id = ?", id).First(&user).Error
+	if err != nil {
+		return nil, errors.ErrUserNotFound
+	}
+	return &user, nil
+}
+
+
+func (r *userRepositoryImpl) UpdateProfile(user entity.User) (string, error) {
+	err := r.db.Save(&user).Error
+	if err != nil {
+		return "", errors.ErrFailedToUpdateProfile
+	}
+	message := "successfuly update profile"
+	return message, nil
 }

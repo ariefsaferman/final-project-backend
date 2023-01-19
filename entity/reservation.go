@@ -13,5 +13,5 @@ type Reservation struct {
 	CheckInDate time.Time
 	CheckOutDate time.Time
 	TotalPrice float64
-	gorm.Model `json:"-"`
+	gorm.Model 
 }

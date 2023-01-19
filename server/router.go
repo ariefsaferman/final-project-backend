@@ -2,6 +2,7 @@ package server
 
 import (
 	"git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/handler"
+	"git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/middleware"
 	"git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/usecase"
 	"github.com/gin-gonic/gin"
 )
@@ -23,5 +24,7 @@ func NewRouter(cfg *RouterConfig) *gin.Engine {
 
 	r.POST("/login", h.Login)
 	r.POST("/register", h.Register)
+	r.GET("/profile", middleware.Authenticated, h.GetProfile)
+	r.PUT("/update-profile", middleware.Authenticated, h.UpdateProfile)
 	return r
 }

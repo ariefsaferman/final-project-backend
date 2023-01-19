@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/dto"
+	"git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/entity"
 	"git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/repository"
 	"git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/utils/auth"
 	"git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/utils/errors"
@@ -11,6 +12,8 @@ type UserUsecase interface {
 	Login(req dto.LoginRequest, id int) (*dto.LoginResponse, error)
 	AdminLogin(req dto.LoginRequest, id int) (*dto.LoginResponse, error)
 	Register(req dto.RegisterRequest) (string, error)
+	GetProfile(id int) (*entity.User, error)
+	UpdateProfile(req dto.UpdateRequest, id int) (string, error)
 } 
 
 type userUsecaseImpl struct {
@@ -80,4 +83,30 @@ func (u *userUsecaseImpl) AdminLogin(req dto.LoginRequest, id int) (*dto.LoginRe
 	}
 
 	return &accessToken, nil
+}
+
+func (u *userUsecaseImpl) GetProfile(id int) (*entity.User, error) {
+	user, err := u.userRepo.GetProfile(id)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
+func (u *userUsecaseImpl) UpdateProfile(req dto.UpdateRequest, id int) (string, error) {
+	user, err := u.userRepo.GetProfile(id)
+	if err != nil {
+		return "", err
+	}
+
+	user.FullName = req.FullName
+	user.Password = u.bcryptUseCase.HashAndSalt(req.Password)
+	user.Address = req.Address
+
+	msg, err := u.userRepo.UpdateProfile(*user)
+	if err != nil {
+		return "", err
+	}
+
+	return msg, nil
 }

@@ -20,4 +20,5 @@ var (
 	ErrFailedToHashPassword = errors.New("failed to hash password")
 	ErrFailedToRegister = errors.New("failed to register")
 	ErrFailedToCreateWallet = errors.New("failed to create wallet")
+	ErrFailedToUpdateProfile = errors.New("failed to update profile")
 )

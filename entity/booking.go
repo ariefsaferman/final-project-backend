@@ -7,5 +7,5 @@ type Booking struct {
 	UserID uint 
 	HouseID uint 
 	ReservationID uint 
-	gorm.Model `json:"-"`
+	gorm.Model 
 }

@@ -12,11 +12,17 @@ type LoginResponse struct {
 }
 
 type RegisterRequest struct {
-	Email    string `json:"email" binding:"required,email"`
-	Password string `json:"password" binding:"required,min=8"`
-	FullName string `json:"full_name" binding:"required"`
-	Address  string `json:"address" binding:"required"`
-	CityID   uint   `json:"city_id" binding:"required"`
+	Email    string `json:"email" validate:"required,email"`
+	Password string `json:"password" validate:"required,min=8"`
+	FullName string `json:"full_name" validate:"required,min=3"`
+	Address  string `json:"address" validate:"required"`
+	CityID   uint   `json:"city_id" validate:"required"`
+}
+
+type UpdateRequest  struct {
+	FullName string `json:"full_name" validate:"required,min=3"`
+	Password string `json:"password" validate:"required,min=8"`
+	Address  string `json:"address" validate:"required"`
 }
 
 type RegisterResponse struct {

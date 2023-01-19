@@ -6,5 +6,5 @@ type HousePhoto struct {
 	ID uint
 	HouseID uint
 	PhotoURL string 
-	gorm.Model `json:"-"`
+	gorm.Model 
 }

@@ -6,5 +6,5 @@ type Role struct {
 	ID uint
 	Name string 
 	UserId uint 
-	gorm.Model `json:"-"`
+	gorm.Model 
 }

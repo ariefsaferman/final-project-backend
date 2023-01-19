@@ -7,5 +7,5 @@ type Pickup struct {
 	UserID uint
 	ReservationsID uint
 	PickupStatusID uint
-	gorm.Model `json:"-"`
+	gorm.Model 
 }

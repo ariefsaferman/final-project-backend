@@ -10,5 +10,5 @@ type House struct {
 	Description string
 	CityID uint 
 	MaxGuests int 
-	gorm.Model `json:"-"`
+	gorm.Model 
 }

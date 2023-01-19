@@ -6,5 +6,5 @@ type City struct {
 	ID uint
 	Name string 
 	UserID uint 
-	gorm.Model `json:"-"`
+	gorm.Model 
 }
