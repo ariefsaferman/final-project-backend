@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	
 
 	"git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/constant"
 	"git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/dto"
@@ -149,30 +150,5 @@ func (h *Handler) UpdateRole(c *gin.Context) {
 	}
 	response.SendSuccess(c, http.StatusOK, res)
 }
- 
-// func (h *Handler) TopUp(c *gin.Context) {
-// 	var req dto.TopUpRequest
-// 	err := c.ShouldBindJSON(&req)
-// 	if err != nil {
-// 		response.SendError(c, http.StatusBadRequest, errResp.ErrCodeBadRequest, errResp.ErrInvalidBody.Error())
-// 		return
-// 	}
 
-// 	v := validator.New()
-// 	if errValidator := v.Struct(req); errValidator != nil {
-// 		response.SendError(c, http.StatusBadRequest, errResp.ErrCodeBadRequest, errValidator.Error())
-// 		return
-// 	}
 
-// 	walletID := c.GetInt("walletID")
-// 	res, err := h.userUsecase.TopUp(req, walletID)
-// 	if err != nil {
-// 		if errors.Is(err, errResp.ErrUserNotFound) {
-// 			response.SendError(c, http.StatusBadRequest, errResp.ErrCodeBadRequest, err.Error())
-// 			return
-// 		}
-// 		response.SendError(c, http.StatusInternalServerError, errResp.ErrCodeInternalServerError, errResp.ErrInternalServerError.Error())
-// 		return
-// 	}
-// 	response.SendSuccess(c, http.StatusOK, res)
-// }

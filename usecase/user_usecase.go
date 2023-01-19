@@ -128,3 +128,5 @@ func (u *userUsecaseImpl) UpdateRole(req dto.UpdateRoleRequest, id int) (string,
 
 	return msg, nil
 }
+
+

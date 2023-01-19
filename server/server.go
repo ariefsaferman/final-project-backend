@@ -15,13 +15,23 @@ func createRouter() *gin.Engine {
 		DB: db.Get(), 
 	})
 
+	transactionRepo := repository.NewTransactionRepository(&repository.TransactionRConfig{
+		DB: db.Get(),
+	})
+
 	userUsecase := usecase.NewUserUsecase(&usecase.UserUConfig{
 		UserRepo:     userRepo,
 		BcryptUseCase: auth.AuthUtilImpl{},
 	})
 
+	transactionUsecase := usecase.NewTransactionUsecase(&usecase.TransactionUConfig{
+		UserRepo: userRepo,
+		TransactionRepo: transactionRepo,
+	})
+
 	return NewRouter(&RouterConfig{
 		UserUseCase: userUsecase,
+		TransactionUseCase: transactionUsecase,
 	})
 }
 

@@ -1,7 +1,6 @@
 package repository
 
 import (
-	
 	"git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/constant"
 	"git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/entity"
 	"git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/utils/errors"
@@ -80,7 +79,6 @@ func (r *userRepositoryImpl) FindAdmin(email string) (*entity.User, error) {
 	return &user, nil
 }
 
-
 func (r *userRepositoryImpl) GetProfile(id int) (*entity.User, error) {
 	var user entity.User
 	err := r.db.Preload("Wallet").Where("id = ?", id).First(&user).Error
@@ -89,7 +87,6 @@ func (r *userRepositoryImpl) GetProfile(id int) (*entity.User, error) {
 	}
 	return &user, nil
 }
-
 
 func (r *userRepositoryImpl) UpdateProfile(user entity.User) (string, error) {
 	err := r.db.Save(&user).Error
@@ -100,12 +97,12 @@ func (r *userRepositoryImpl) UpdateProfile(user entity.User) (string, error) {
 	return message, nil
 }
 
-
 func (r *userRepositoryImpl) UpdateRole(user entity.User) (string, error) {
 	err := r.db.Save(&user).Error
 	if err != nil {
 		return "", errors.ErrFailedToUpdateRole
 	}
 	message := "successfuly update role"
+
 	return message, nil
 }

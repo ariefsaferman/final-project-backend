@@ -9,12 +9,14 @@ import (
 
 type RouterConfig struct {
 	UserUseCase usecase.UserUsecase
+	TransactionUseCase usecase.TransactionUseCase
 }
 
 func NewRouter(cfg *RouterConfig) *gin.Engine {
 	r := gin.Default()
 	h := handler.NewHandler(&handler.Config{
 		UserUsecase: cfg.UserUseCase,
+		TransactionUsecase: cfg.TransactionUseCase,
 	})
 
 	admin := r.Group("/admin")
@@ -27,5 +29,6 @@ func NewRouter(cfg *RouterConfig) *gin.Engine {
 	r.GET("/profile", middleware.Authenticated, h.GetProfile)
 	r.PUT("/update-profile", middleware.Authenticated, h.UpdateProfile)
 	r.PUT("/update-role", middleware.Authenticated, h.UpdateRole)
+	r.POST("/top-up", middleware.Authenticated, h.TopUp)
 	return r
 }
