@@ -10,55 +10,50 @@ import (
 type UserRepository interface {
 	FindByEmailAndRole(email string, id int) (*entity.User, error)
 	FindAdmin(email string) (*entity.User, error)
-	Register(user entity.User) (string, error)
+	Register(user entity.User) (*entity.User, error)
 	GetProfile(id int) (*entity.User, error)
 	UpdateProfile(user entity.User) (string, error)
 	UpdateRole(user entity.User) (string, error)
 }
 
 type userRepositoryImpl struct {
-	db *gorm.DB
+	db         *gorm.DB
+	walletRepo WalletRepository
 }
 
 type UserRConfig struct {
-	DB *gorm.DB
+	DB               *gorm.DB
+	WalletRepository WalletRepository
 }
 
 func NewUserRepository(config *UserRConfig) UserRepository {
 	return &userRepositoryImpl{
-		db: config.DB,
+		db:         config.DB,
+		walletRepo: config.WalletRepository,
 	}
 }
 
-func (r *userRepositoryImpl) createWallet(id uint) error {
-	err := r.db.Create(&entity.Wallet{UserID: id}).Error
-	if err != nil {
-		return errors.ErrFailedToCreateWallet
-	}
-	return nil
-}
-
-func (r *userRepositoryImpl) Register(user entity.User) (string, error) {
+func (r *userRepositoryImpl) Register(user entity.User) (*entity.User, error) {
 	user.RoleID = 2
-	message := "successfuly register user"
 
 	err := r.db.Transaction(func(tx *gorm.DB) error {
 		if err := r.db.Create(&user).Error; err != nil {
 			return errors.ErrFailedToRegister
 		}
 
-		id := user.ID
-		if err := r.createWallet(id); err != nil {
+		wallet, err := r.walletRepo.CreateWallet(tx, user.ID)
+		if err != nil {
 			return err
 		}
+		user.Wallet = *wallet
 		return nil
 	})
 
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return message, nil
+	return &user, nil
 }
 
 func (r *userRepositoryImpl) FindByEmailAndRole(email string, id int) (*entity.User, error) {

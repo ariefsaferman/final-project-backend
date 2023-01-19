@@ -2,42 +2,47 @@ package repository
 
 import (
 	"git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/entity"
-	"git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/utils/errors"
 	"gorm.io/gorm"
 )
 
 type TransactionRepository interface {
-	TopUp(user entity.User) (string, error)
+	TopUp(req entity.Transaction) (*entity.Transaction, error)
 }
 
 type transactionRepositoryImpl struct {
-	db *gorm.DB
+	db         *gorm.DB
+	walletRepo WalletRepository
 }
 
 type TransactionRConfig struct {
-	DB *gorm.DB
+	DB               *gorm.DB
+	WalletRepository WalletRepository
 }
 
 func NewTransactionRepository(config *TransactionRConfig) TransactionRepository {
 	return &transactionRepositoryImpl{
-		db: config.DB,
+		db:         config.DB,
+		walletRepo: config.WalletRepository,
 	}
 }
 
-func (r *transactionRepositoryImpl) TopUp(user entity.User) (string, error) {
-	message := "successfuly top up wallet"
-	var wallet entity.Wallet
+func (r *transactionRepositoryImpl) TopUp(req entity.Transaction) (*entity.Transaction, error) {
 
 	err := r.db.Transaction(func(tx *gorm.DB) error {
-		if err := r.db.Model(&wallet).Where("id = ?", user.Wallet.ID).Update("balance", gorm.Expr("balance + ?", user.Wallet.Balance)).Error; err != nil {
-			return errors.ErrFailedToUpdateWallet
+		if err := r.walletRepo.TopUp(tx, req.UserID, req.Balance); err != nil {
+			return err
 		}
+
+		if err := tx.Create(&req).Error; err != nil {
+			return err
+		}
+
 		return nil
 	})
 
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return message, nil
+	return &req, nil
 }

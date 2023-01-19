@@ -3,5 +3,5 @@ package entity
 type Wallet struct {
 	ID     uint `gorm:"primaryKey"`
 	UserID uint 
-	Balance int `gorm:"default:0"`
+	Balance float64 `gorm:"default:0"`
 }

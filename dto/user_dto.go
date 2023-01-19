@@ -33,6 +33,10 @@ type RegisterResponse struct {
 	ID       uint   `json:"id"`
 	Email    string `json:"email"`
 	FullName string `json:"full_name"`
+	Address string `json:"address"`
+	CityID uint `json:"city_id"`
+	RoleID uint `json:"role_id"`
+	Wallet entity.Wallet `json:"wallet"`
 }
 
 func (r *RegisterRequest) ReqToUser() entity.User {
@@ -49,4 +53,8 @@ func (r *RegisterResponse) UserToRes(user entity.User) {
 	r.ID = user.ID
 	r.Email = user.Email
 	r.FullName = user.FullName
+	r.Address = user.Address
+	r.CityID = user.CityID
+	r.RoleID = user.RoleID
+	r.Wallet = user.Wallet
 }

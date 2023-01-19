@@ -26,4 +26,6 @@ var (
 	ErrFailedToUpdateWallet = errors.New("failed to update wallet")
 	ErrInvalidLessAmount = errors.New("amount cannot be less than 10.000")
 	ErrInvalidMoreAmount = errors.New("amount cannot be greater than 100.000.000")
+	ErrWalletNotFound = errors.New("wallet not found")
+	ErrSourceofFundNotFound = errors.New("source of fund not found")
 )

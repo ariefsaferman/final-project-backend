@@ -12,7 +12,7 @@ import (
 type UserUsecase interface {
 	Login(req dto.LoginRequest, id int) (*dto.LoginResponse, error)
 	AdminLogin(req dto.LoginRequest, id int) (*dto.LoginResponse, error)
-	Register(req dto.RegisterRequest) (string, error)
+	Register(req dto.RegisterRequest) (*dto.RegisterResponse, error)
 	GetProfile(id int) (*entity.User, error)
 	UpdateProfile(req dto.UpdateRequest, id int) (string, error)
 	UpdateRole(req dto.UpdateRoleRequest, id int) (string, error)
@@ -35,19 +35,22 @@ func NewUserUsecase(config *UserUConfig) UserUsecase {
 	}
 }
 
-func (u *userUsecaseImpl) Register(req dto.RegisterRequest) (string, error) {
+func (u *userUsecaseImpl) Register(req dto.RegisterRequest) (*dto.RegisterResponse, error) {
 	userRegister := req.ReqToUser()
 	userRegister.Password = u.bcryptUseCase.HashAndSalt(req.Password)
 	if len(userRegister.Password) == 0 {
-		return "", errors.ErrFailedToHashPassword
+		return nil, errors.ErrFailedToHashPassword
 	}
 
-	msg, err := u.userRepo.Register(userRegister)
+	user, err := u.userRepo.Register(userRegister)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return msg, nil
+	var res dto.RegisterResponse
+	res.UserToRes(*user)
+
+	return &res, nil
 }
 
 func (u *userUsecaseImpl) Login(req dto.LoginRequest, id int) (*dto.LoginResponse, error) {

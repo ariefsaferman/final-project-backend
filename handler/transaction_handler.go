@@ -2,6 +2,7 @@ package handler
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -35,11 +36,11 @@ func (h *Handler) TopUp(c *gin.Context) {
 		return
 	}
 
-	walletID := c.GetInt("walletID")
 	userID := c.GetInt("userID")
-	res, err := h.transactionUsecase.TopUp(req, userID, walletID)
+	fmt.Println("userID: ", userID)
+	res, err := h.transactionUsecase.TopUp(req, userID)
 	if err != nil {
-		if errors.Is(err, errResp.ErrUserNotFound) {
+		if errors.Is(err, errResp.ErrSourceofFundNotFound) || errors.Is(err, errResp.ErrWalletNotFound) {
 			response.SendError(c, http.StatusBadRequest, errResp.ErrCodeBadRequest, err.Error())
 			return
 		}

@@ -2,7 +2,6 @@ package handler
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 	
 
@@ -84,7 +83,6 @@ func (h *Handler) AdminLogin(c *gin.Context) {
 
 func (h *Handler) GetProfile(c *gin.Context) {
 	userID := c.GetInt("userID")
-	fmt.Println("userID: ", userID)
 	res, err := h.userUsecase.GetProfile(userID)
 	if err != nil {
 		if errors.Is(err, errResp.ErrUserNotFound) {
