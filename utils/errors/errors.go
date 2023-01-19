@@ -21,4 +21,6 @@ var (
 	ErrFailedToRegister = errors.New("failed to register")
 	ErrFailedToCreateWallet = errors.New("failed to create wallet")
 	ErrFailedToUpdateProfile = errors.New("failed to update profile")
+	ErrFailedToUpdateRole = errors.New("failed to update role")
+	ErrUnauthorized = errors.New("unauthorized")
 )

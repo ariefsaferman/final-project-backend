@@ -26,5 +26,6 @@ func NewRouter(cfg *RouterConfig) *gin.Engine {
 	r.POST("/register", h.Register)
 	r.GET("/profile", middleware.Authenticated, h.GetProfile)
 	r.PUT("/update-profile", middleware.Authenticated, h.UpdateProfile)
+	r.PUT("/update-role", middleware.Authenticated, h.UpdateRole)
 	return r
 }

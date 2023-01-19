@@ -16,7 +16,7 @@ type AuthUtil interface {
 	GenerateToken(req entity.User) dto.LoginResponse
 }
 
-type AuthUtilImpl struct {}
+type AuthUtilImpl struct{}
 
 func NewAuthUtil() AuthUtilImpl {
 	return AuthUtilImpl{}
@@ -37,11 +37,11 @@ func (a AuthUtilImpl) ComparePasswords(hashedPwd string, plainPwd string) bool {
 	return err == nil
 }
 
-
 type accessTokenClaims struct {
-	UserID uint `json:"user_id"`
-	Email string `json:"email"`
-	RoleID uint `json:"role_id"`
+	UserID uint   `json:"user_id"`
+	Email  string `json:"email"`
+	RoleID uint   `json:"role_id"`
+	WalletID uint `json:"wallet_id"`
 	jwt.RegisteredClaims
 }
 
@@ -50,9 +50,10 @@ func (a AuthUtilImpl) GenerateToken(req entity.User) dto.LoginResponse {
 		req.ID,
 		req.Email,
 		req.RoleID,
+		req.Wallet.ID,
 		jwt.RegisteredClaims{
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
-			Issuer:  config.AppName,
+			Issuer:    config.AppName,
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 1)),
 		},
 	}
@@ -61,4 +62,3 @@ func (a AuthUtilImpl) GenerateToken(req entity.User) dto.LoginResponse {
 
 	return dto.LoginResponse{AccessToken: signedToken}
 }
-

@@ -25,6 +25,10 @@ type UpdateRequest  struct {
 	Address  string `json:"address" validate:"required"`
 }
 
+type UpdateRoleRequest struct {
+	RoleID uint `json:"role_id" validate:"required"`
+}
+
 type RegisterResponse struct {
 	ID       uint   `json:"id"`
 	Email    string `json:"email"`
