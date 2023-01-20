@@ -10,9 +10,9 @@ type User struct {
 	Address    string     `json:"address"`
 	CityID     uint       `json:"city_id"`
 	RoleID     uint       `json:"role_id"`
-	Wallet 	   Wallet     `json:"wallet"`
+	Wallet     Wallet     `json:"wallet"`
 	City       City       `json:"-"`
 	Role       Role       `json:"-"`
-	Chance     GameChance `json:"-"`
+	GameChance GameChance `json:"game_chance"`
 	gorm.Model `json:"-"`
 }

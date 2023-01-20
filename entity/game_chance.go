@@ -1,10 +1,11 @@
 package entity
 
-import "gorm.io/gorm"
-
 type GameChance struct {
-	ID uint 
-	UserID uint 
-	Chances int 
-	gorm.Model 
+	ID      uint `json:"id"`
+	UserID  uint `json:"user_id"`
+	Chances int  `json:"chance" default:"0"`
+}
+
+func (GameChance) TableName() string {
+	return "games_chances"
 }

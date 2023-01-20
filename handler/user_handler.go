@@ -39,6 +39,32 @@ func (h *Handler) Register(c *gin.Context) {
 	response.SendSuccess(c, http.StatusOK, res)
 }
 
+func (h *Handler) RegisterAdmin(c *gin.Context) {
+	var req dto.RegisterRequest
+	err := c.ShouldBindJSON(&req)
+	if err != nil {
+		response.SendError(c, http.StatusBadRequest, errResp.ErrCodeBadRequest, errResp.ErrInvalidBody.Error())
+		return
+	}
+
+	v := validator.New()
+	if errValidator := v.Struct(req); errValidator != nil {
+		response.SendError(c, http.StatusBadRequest, errResp.ErrCodeBadRequest, errValidator.Error())
+		return
+	}
+
+	res, err := h.userUsecase.AdminRegister(req)
+	if err != nil {
+		if errors.Is(err, errResp.ErrUserAlreadyExist) {
+			response.SendError(c, http.StatusBadRequest, errResp.ErrCodeBadRequest, err.Error())
+			return
+		}
+		response.SendError(c, http.StatusInternalServerError, errResp.ErrCodeInternalServerError, errResp.ErrInternalServerError.Error())
+		return
+	}
+	response.SendSuccess(c, http.StatusOK, res)
+}
+
 func (h *Handler) Login(c *gin.Context) {
 	var req dto.LoginRequest
 	err := c.ShouldBindJSON(&req)

@@ -28,4 +28,5 @@ var (
 	ErrInvalidMoreAmount = errors.New("amount cannot be greater than 100.000.000")
 	ErrWalletNotFound = errors.New("wallet not found")
 	ErrSourceofFundNotFound = errors.New("source of fund not found")
+	ErrCreateGameChance = errors.New("failed to create game chance")
 )

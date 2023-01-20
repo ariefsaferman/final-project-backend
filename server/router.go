@@ -21,6 +21,7 @@ func NewRouter(cfg *RouterConfig) *gin.Engine {
 
 	admin := r.Group("/admin")
 	{
+		admin.POST("/register", h.RegisterAdmin)
 		admin.POST("/login", h.AdminLogin)
 	}
 

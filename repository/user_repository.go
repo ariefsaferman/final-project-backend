@@ -19,25 +19,27 @@ type UserRepository interface {
 type userRepositoryImpl struct {
 	db         *gorm.DB
 	walletRepo WalletRepository
+	gameRepo   GameRepository
 }
 
 type UserRConfig struct {
 	DB               *gorm.DB
 	WalletRepository WalletRepository
+	GameRepository   GameRepository
 }
 
 func NewUserRepository(config *UserRConfig) UserRepository {
 	return &userRepositoryImpl{
 		db:         config.DB,
 		walletRepo: config.WalletRepository,
+		gameRepo:   config.GameRepository,
 	}
 }
 
 func (r *userRepositoryImpl) Register(user entity.User) (*entity.User, error) {
-	user.RoleID = 2
 
 	err := r.db.Transaction(func(tx *gorm.DB) error {
-		if err := r.db.Create(&user).Error; err != nil {
+		if err := tx.Create(&user).Error; err != nil {
 			return errors.ErrFailedToRegister
 		}
 
@@ -46,6 +48,13 @@ func (r *userRepositoryImpl) Register(user entity.User) (*entity.User, error) {
 			return err
 		}
 		user.Wallet = *wallet
+
+		gameChances, err := r.gameRepo.CreateChance(tx, user.ID)
+		if err != nil {
+			return err
+		}
+		user.GameChance = *gameChances
+
 		return nil
 	})
 
@@ -76,7 +85,7 @@ func (r *userRepositoryImpl) FindAdmin(email string) (*entity.User, error) {
 
 func (r *userRepositoryImpl) GetProfile(id int) (*entity.User, error) {
 	var user entity.User
-	err := r.db.Preload("Wallet").Where("id = ?", id).First(&user).Error
+	err := r.db.Preload("GameChance").Preload("Wallet").Where("id = ?", id).First(&user).Error
 	if err != nil {
 		return nil, errors.ErrUserNotFound
 	}

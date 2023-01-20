@@ -25,10 +25,10 @@ func NewWalletRepository(config *WalletRConfig) WalletRepository {
 	}
 }
 
-func (r *walletRepositoryImpl) CreateWallet(tx *gorm.DB, id uint) (*entity.Wallet, error){
+func (r *walletRepositoryImpl) CreateWallet(tx *gorm.DB, id uint) (*entity.Wallet, error) {
 	req := entity.Wallet{UserID: id}
 
-	err := r.db.Create(&req).Error
+	err := tx.Create(&req).Error
 	if err != nil {
 		return nil, errors.ErrFailedToCreateWallet
 	}
@@ -36,7 +36,7 @@ func (r *walletRepositoryImpl) CreateWallet(tx *gorm.DB, id uint) (*entity.Walle
 }
 
 func (r *walletRepositoryImpl) TopUp(tx *gorm.DB, userID uint, amount float64) error {
-	err := r.db.Model(&entity.Wallet{}).Where("user_id = ?", userID).Update("balance", gorm.Expr("balance + ?", amount))
+	err := tx.Model(&entity.Wallet{}).Where("user_id = ?", userID).Update("balance", gorm.Expr("balance + ?", amount))
 	if err.Error != nil {
 		return err.Error
 	}
