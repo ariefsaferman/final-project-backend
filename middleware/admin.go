@@ -10,7 +10,7 @@ import (
 
 func AuthorizeAdmin(c *gin.Context) {
 	roleID := c.GetInt("roleID")
-	if roleID == constant.HOST_ID || roleID == constant.USER_ID{
+	if roleID == constant.HOST_ID || roleID == constant.USER_ID {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 			"code":    errors.ErrCodeUnauthorized,
 			"message": "you are not admin/superadmin",
@@ -21,10 +21,21 @@ func AuthorizeAdmin(c *gin.Context) {
 
 func AuthorizeUserOrHost(c *gin.Context) {
 	roleID := c.GetInt("roleID")
-	if roleID == constant.ADMIN_ID || roleID == constant.SUPER_ADMIN_ID{
+	if roleID == constant.ADMIN_ID || roleID == constant.SUPER_ADMIN_ID {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 			"code":    errors.ErrCodeUnauthorized,
 			"message": "you are not user/host",
+		})
+		return
+	}
+}
+
+func AuthorizeHost(c *gin.Context) {
+	roleID := c.GetInt("roleID")
+	if roleID != constant.HOST_ID {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+			"code":    errors.ErrCodeUnauthorized,
+			"message": "you are not a host",
 		})
 		return
 	}

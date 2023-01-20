@@ -12,6 +12,15 @@ import (
 
 func createRouter() *gin.Engine {
 
+	housePhotoRepo := repository.NewHousePhotoRepository(&repository.HousePhotoRConfig{
+		DB: db.Get(),
+	})
+
+	houseRepo := repository.NewHouseRepository(&repository.HouseRConfig{
+		DB:             db.Get(),
+		HousePhotoRepo: housePhotoRepo,
+	})
+
 	walletRepo := repository.NewWalletRepository(&repository.WalletRConfig{
 		DB: db.Get(),
 	})
@@ -47,9 +56,14 @@ func createRouter() *gin.Engine {
 		SourceOfFundRepo: sourceOfFundRepo,
 	})
 
+	houseUseCase := usecase.NewHouseUsecase(&usecase.HouseUConfig{
+		HouseRepo: houseRepo,
+	})
+
 	return NewRouter(&RouterConfig{
 		UserUseCase:        userUsecase,
 		TransactionUseCase: transactionUsecase,
+		HouseUsecase:       houseUseCase,
 	})
 }
 

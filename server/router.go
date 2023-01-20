@@ -10,6 +10,7 @@ import (
 type RouterConfig struct {
 	UserUseCase        usecase.UserUsecase
 	TransactionUseCase usecase.TransactionUseCase
+	HouseUsecase       usecase.HouseUseCase
 }
 
 func NewRouter(cfg *RouterConfig) *gin.Engine {
@@ -17,6 +18,7 @@ func NewRouter(cfg *RouterConfig) *gin.Engine {
 	h := handler.NewHandler(&handler.Config{
 		UserUsecase:        cfg.UserUseCase,
 		TransactionUsecase: cfg.TransactionUseCase,
+		HouseUsecase:       cfg.HouseUsecase,
 	})
 
 	admin := r.Group("/admin")
@@ -31,5 +33,6 @@ func NewRouter(cfg *RouterConfig) *gin.Engine {
 	r.PUT("/update-profile", middleware.Authenticated, middleware.AuthorizeUserOrHost, h.UpdateProfile)
 	r.PUT("/update-role", middleware.Authenticated, middleware.AuthorizeUserOrHost, h.UpdateRole)
 	r.POST("/top-up", middleware.Authenticated, middleware.AuthorizeUserOrHost, h.TopUp)
+	r.POST("/upload-house", middleware.Authenticated, middleware.AuthorizeHost, h.CreateHouse)
 	return r
 }

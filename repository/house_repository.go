@@ -11,21 +11,39 @@ type HouseRepository interface {
 }
 
 type houseRepositoryImpl struct {
-	db *gorm.DB
+	db             *gorm.DB
+	housePhotoRepo HousePhotoRepository
 }
 
 type HouseRConfig struct {
-	DB *gorm.DB
+	DB             *gorm.DB
+	HousePhotoRepo HousePhotoRepository
 }
 
 func NewHouseRepository(config *HouseRConfig) HouseRepository {
 	return &houseRepositoryImpl{
-		db: config.DB,
+		db:             config.DB,
+		housePhotoRepo: config.HousePhotoRepo,
 	}
 }
 
 func (r *houseRepositoryImpl) CreateHouse(req entity.House) (*entity.House, error) {
-	err := r.db.Create(&req).Error
+
+	err := r.db.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Create(&req).Error; err != nil {
+			return err
+		}
+
+		var housePhoto entity.HousePhoto
+		housePhoto.HouseID = req.ID
+		housePhoto.PhotoURL = "blabla.jpg"
+		photo, err := r.housePhotoRepo.CreateHousePhoto(tx, housePhoto)
+		if err != nil {
+			return err
+		}
+		req.HousePhoto = *photo
+		return nil
+	})
 	if err != nil {
 		return nil, errResp.ErrFailedToCreateHouse
 	}
