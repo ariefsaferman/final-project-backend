@@ -3,7 +3,6 @@ package handler
 import (
 	"errors"
 	"net/http"
-	
 
 	"git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/constant"
 	"git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/dto"
@@ -40,7 +39,7 @@ func (h *Handler) Register(c *gin.Context) {
 }
 
 func (h *Handler) RegisterAdmin(c *gin.Context) {
-	var req dto.RegisterRequest
+	var req dto.AdminRegisterRequest
 	err := c.ShouldBindJSON(&req)
 	if err != nil {
 		response.SendError(c, http.StatusBadRequest, errResp.ErrCodeBadRequest, errResp.ErrInvalidBody.Error())
@@ -149,21 +148,8 @@ func (h *Handler) UpdateProfile(c *gin.Context) {
 }
 
 func (h *Handler) UpdateRole(c *gin.Context) {
-	var req dto.UpdateRoleRequest
-	err := c.ShouldBindJSON(&req)
-	if err != nil {
-		response.SendError(c, http.StatusBadRequest, errResp.ErrCodeBadRequest, errResp.ErrInvalidBody.Error())
-		return
-	}
-
-	v := validator.New()
-	if errValidator := v.Struct(req); errValidator != nil {
-		response.SendError(c, http.StatusBadRequest, errResp.ErrCodeBadRequest, errValidator.Error())
-		return
-	}
-
 	userID := c.GetInt("userID")
-	res, err := h.userUsecase.UpdateRole(req, userID)
+	res, err := h.userUsecase.UpdateRole(userID)
 	if err != nil {
 		if errors.Is(err, errResp.ErrUserNotFound) {
 			response.SendError(c, http.StatusBadRequest, errResp.ErrCodeBadRequest, err.Error())
@@ -174,5 +160,3 @@ func (h *Handler) UpdateRole(c *gin.Context) {
 	}
 	response.SendSuccess(c, http.StatusOK, res)
 }
-
-

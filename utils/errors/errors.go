@@ -29,4 +29,5 @@ var (
 	ErrWalletNotFound = errors.New("wallet not found")
 	ErrSourceofFundNotFound = errors.New("source of fund not found")
 	ErrCreateGameChance = errors.New("failed to create game chance")
+	ErrFailedToCreateHouse = errors.New("failed to create house")
 )

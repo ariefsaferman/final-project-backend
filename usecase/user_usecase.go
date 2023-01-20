@@ -12,11 +12,11 @@ import (
 type UserUsecase interface {
 	Login(req dto.LoginRequest, id int) (*dto.LoginResponse, error)
 	AdminLogin(req dto.LoginRequest, id int) (*dto.LoginResponse, error)
-	AdminRegister(req dto.RegisterRequest) (*dto.RegisterResponse, error)
+	AdminRegister(req dto.AdminRegisterRequest) (*dto.AdminRegisterResponse, error)
 	Register(req dto.RegisterRequest) (*dto.RegisterResponse, error)
 	GetProfile(id int) (*entity.User, error)
 	UpdateProfile(req dto.UpdateRequest, id int) (string, error)
-	UpdateRole(req dto.UpdateRoleRequest, id int) (string, error)
+	UpdateRole(id int) (string, error)
 }
 
 type userUsecaseImpl struct {
@@ -55,21 +55,21 @@ func (u *userUsecaseImpl) Register(req dto.RegisterRequest) (*dto.RegisterRespon
 	return &res, nil
 }
 
-func (u *userUsecaseImpl) AdminRegister(req dto.RegisterRequest) (*dto.RegisterResponse, error) {
-	userRegister := req.ReqToUser()
-	userRegister.Password = u.bcryptUseCase.HashAndSalt(req.Password)
-	userRegister.RoleID = constant.ADMIN_ID
-	if len(userRegister.Password) == 0 {
+func (u *userUsecaseImpl) AdminRegister(req dto.AdminRegisterRequest) (*dto.AdminRegisterResponse, error) {
+	adminRegister := req.ReqToAdmin()
+	adminRegister.Password = u.bcryptUseCase.HashAndSalt(req.Password)
+	adminRegister.RoleID = constant.ADMIN_ID
+	if len(adminRegister.Password) == 0 {
 		return nil, errors.ErrFailedToHashPassword
 	}
 
-	user, err := u.userRepo.Register(userRegister)
+	admin, err := u.userRepo.RegisterAdmin(adminRegister)
 	if err != nil {
 		return nil, err
 	}
 
-	var res dto.RegisterResponse
-	res.UserToRes(*user)
+	var res dto.AdminRegisterResponse
+	res.AdminToRes(*admin)
 
 	return &res, nil
 }
@@ -103,7 +103,12 @@ func (u *userUsecaseImpl) AdminLogin(req dto.LoginRequest, id int) (*dto.LoginRe
 		return nil, errors.ErrWrongPassword
 	}
 
-	accessToken := u.bcryptUseCase.GenerateToken(*user)
+	adminUser := entity.User{
+		Email:    user.Email,
+		Password: user.Password,
+		RoleID:   uint(user.RoleID),
+	}
+	accessToken := u.bcryptUseCase.GenerateToken(adminUser)
 	if accessToken.AccessToken == "" {
 		return nil, errors.ErrFailedToGenerateToken
 	}
@@ -137,7 +142,7 @@ func (u *userUsecaseImpl) UpdateProfile(req dto.UpdateRequest, id int) (string, 
 	return msg, nil
 }
 
-func (u *userUsecaseImpl) UpdateRole(req dto.UpdateRoleRequest, id int) (string, error) {
+func (u *userUsecaseImpl) UpdateRole(id int) (string, error) {
 	user, err := u.userRepo.GetProfile(id)
 	if err != nil {
 		return "", err
@@ -152,5 +157,3 @@ func (u *userUsecaseImpl) UpdateRole(req dto.UpdateRoleRequest, id int) (string,
 
 	return msg, nil
 }
-
-

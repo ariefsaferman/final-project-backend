@@ -9,8 +9,9 @@ import (
 
 type UserRepository interface {
 	FindByEmailAndRole(email string, id int) (*entity.User, error)
-	FindAdmin(email string) (*entity.User, error)
+	FindAdmin(email string) (*entity.Admin, error)
 	Register(user entity.User) (*entity.User, error)
+	RegisterAdmin(admin entity.Admin) (*entity.Admin, error)
 	GetProfile(id int) (*entity.User, error)
 	UpdateProfile(user entity.User) (string, error)
 	UpdateRole(user entity.User) (string, error)
@@ -65,6 +66,14 @@ func (r *userRepositoryImpl) Register(user entity.User) (*entity.User, error) {
 	return &user, nil
 }
 
+func (r *userRepositoryImpl) RegisterAdmin(admin entity.Admin) (*entity.Admin, error) {
+	err := r.db.Create(&admin).Error
+	if err != nil {
+		return nil, errors.ErrFailedToRegister
+	}
+	return &admin, nil
+}
+
 func (r *userRepositoryImpl) FindByEmailAndRole(email string, id int) (*entity.User, error) {
 	var user entity.User
 	err := r.db.Where("email = ?", email).Where("role_id != 1").First(&user).Error
@@ -74,9 +83,9 @@ func (r *userRepositoryImpl) FindByEmailAndRole(email string, id int) (*entity.U
 	return &user, nil
 }
 
-func (r *userRepositoryImpl) FindAdmin(email string) (*entity.User, error) {
-	var user entity.User
-	err := r.db.Where("email = ?", email).Where("role_id = ?", constant.ADMIN_ID).First(&user).Error
+func (r *userRepositoryImpl) FindAdmin(email string) (*entity.Admin, error) {
+	var user entity.Admin
+	err := r.db.Where("email = ?", email).Where("role_id = ?", constant.ADMIN_ID).Or("role_id = ?", constant.SUPER_ADMIN_ID).First(&user).Error
 	if err != nil {
 		return nil, errors.ErrUserNotFound
 	}
