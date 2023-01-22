@@ -7,7 +7,7 @@ import (
 )
 
 type HousePhotoRepository interface {
-	CreateHousePhoto(tx *gorm.DB, req entity.HousePhoto) (*entity.HousePhoto, error)
+	CreateHousePhoto(tx *gorm.DB, req *entity.HousePhoto) (*entity.HousePhoto, error)
 }
 
 type housePhotoRepositoryImpl struct {
@@ -24,10 +24,10 @@ func NewHousePhotoRepository(config *HousePhotoRConfig) HousePhotoRepository {
 	}
 }
 
-func (r *housePhotoRepositoryImpl) CreateHousePhoto(tx *gorm.DB, req entity.HousePhoto) (*entity.HousePhoto, error) {
+func (r *housePhotoRepositoryImpl) CreateHousePhoto(tx *gorm.DB, req *entity.HousePhoto) (*entity.HousePhoto, error) {
 	err := tx.Create(&req).Error
 	if err != nil {
 		return nil, errResp.ErrFailedToCreateHousePhoto
 	}
-	return &req, nil
+	return req, nil
 }

@@ -34,17 +34,9 @@ func (r *houseRepositoryImpl) CreateHouse(req entity.House) (*entity.House, erro
 			return err
 		}
 
-		var housePhoto entity.HousePhoto
-		housePhoto.HouseID = req.ID
-		housePhoto.PhotoURL = "blabla.jpg"
-		photo, err := r.housePhotoRepo.CreateHousePhoto(tx, housePhoto)
-		if err != nil {
-			return err
-		}
-		req.HousePhoto = *photo
 		return nil
 	})
-	if err != nil {
+	if err != nil {	
 		return nil, errResp.ErrFailedToCreateHouse
 	}
 	return &req, nil
