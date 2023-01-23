@@ -3,8 +3,10 @@ package handler
 import (
 	"errors"
 	"net/http"
+	"strconv"
 
 	"git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/dto"
+	"git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/entity"
 	errResp "git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/utils/errors"
 	"git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/utils/response"
 	"github.com/gin-gonic/gin"
@@ -36,4 +38,34 @@ func (h *Handler) CreateHouse(c *gin.Context) {
 		return
 	}
 	response.SendSuccess(c, http.StatusOK, res)
+}
+
+func (h *Handler) GetHouseListHost(c *gin.Context) {
+	userID := c.GetInt("userID")
+	res, err := h.houseUsecase.ViewHouseListHost(uint(userID))
+	if err != nil {
+		if errors.Is(err, errResp.ErrFailedToViewHouseList) {
+			response.SendError(c, http.StatusBadRequest, errResp.ErrCodeBadRequest, err.Error())
+			return
+		}
+		response.SendError(c, http.StatusInternalServerError, errResp.ErrCodeInternalServerError, errResp.ErrInternalServerError.Error())
+		return
+	}
+	response.SendSuccess(c, http.StatusOK, res)
+}
+
+func (h *Handler) GetHouseList(c *gin.Context) {
+	intLimit, _ := strconv.Atoi(c.Query("limit"))
+	intPage, _ := strconv.Atoi(c.Query("page"))
+	params := entity.NewHouseParams(c.Query("search"), c.Query("sortBy"), c.Query("sort"), intLimit, intPage)
+	res, totalRows, totalPages, err := h.houseUsecase.ViewHouseList(params)
+	if err != nil {
+		if errors.Is(err, errResp.ErrFailedToViewHouseList) {
+			response.SendError(c, http.StatusBadRequest, errResp.ErrCodeBadRequest, err.Error())
+			return
+		}
+		response.SendError(c, http.StatusInternalServerError, errResp.ErrCodeInternalServerError, errResp.ErrInternalServerError.Error())
+		return
+	}
+	response.SendSuccessWithPagination(c, http.StatusOK, res, totalRows, totalPages)
 }

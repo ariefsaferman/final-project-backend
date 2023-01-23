@@ -1,9 +1,13 @@
 package server
 
 import (
+	"net/http"
+
 	"git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/handler"
 	"git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/middleware"
 	"git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/usecase"
+	errResp "git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/utils/errors"
+	"git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/utils/response"
 	"github.com/gin-gonic/gin"
 )
 
@@ -21,6 +25,10 @@ func NewRouter(cfg *RouterConfig) *gin.Engine {
 		HouseUsecase:       cfg.HouseUsecase,
 	})
 
+	r.NoRoute(func(c *gin.Context) {
+		response.SendError(c, http.StatusNotFound, errResp.ErrCodePageNotFound, errResp.ErrPageNotFound.Error())
+	})
+
 	admin := r.Group("/admin")
 	{
 		admin.POST("/register", middleware.Authenticated, middleware.AuthorizeAdmin, h.RegisterAdmin)
@@ -33,6 +41,12 @@ func NewRouter(cfg *RouterConfig) *gin.Engine {
 	r.PUT("/update-profile", middleware.Authenticated, middleware.AuthorizeUserOrHost, h.UpdateProfile)
 	r.PUT("/update-role", middleware.Authenticated, middleware.AuthorizeUserOrHost, h.UpdateRole)
 	r.POST("/top-up", middleware.Authenticated, middleware.AuthorizeUserOrHost, h.TopUp)
-	r.POST("/upload-house", middleware.Authenticated, middleware.AuthorizeHost, h.CreateHouse)
+	r.GET("/house", h.GetHouseList)
+
+	host := r.Group("/host")
+	{
+		host.POST("/upload-house", middleware.Authenticated, middleware.AuthorizeHost, h.CreateHouse)
+		host.GET("/house", middleware.Authenticated, middleware.AuthorizeHost, h.GetHouseListHost)
+	}
 	return r
 }

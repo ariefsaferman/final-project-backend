@@ -10,7 +10,15 @@ func SendSuccess(c *gin.Context, statusCode int, data interface{}) {
 
 func SendError(c *gin.Context, statusCode int, errCode string, message string) {
 	c.JSON(statusCode, gin.H{
-		"code": errCode,
+		"code":    errCode,
 		"message": message,
+	})
+}
+
+func SendSuccessWithPagination(c *gin.Context, statusCode int, data interface{}, totalRows int64, totalPages int) {
+	c.JSON(statusCode, gin.H{
+		"data":       data,
+		"totalRows":  totalRows,
+		"totalPages": totalPages,
 	})
 }

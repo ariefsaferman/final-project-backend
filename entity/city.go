@@ -3,8 +3,7 @@ package entity
 import "gorm.io/gorm"
 
 type City struct {
-	ID uint
-	Name string 
-	UserID uint 
-	gorm.Model 
+	ID         uint   `json:"id" gorm:"primaryKey" `
+	Name       string `json:"name" validate:"required"`
+	gorm.Model `json:"-"`
 }
