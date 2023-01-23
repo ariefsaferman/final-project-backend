@@ -15,13 +15,14 @@ type House struct {
 	CityID        uint         `json:"city_id" validate:"required"`
 	MaxGuests     uint         `json:"max_guests" gorm:"column:max_guest"`
 	HousePhoto    []HousePhoto `form:"house_photo" json:"house_photo"`
-	City          City         `json:"city"`
+	City          City         `json:"-"`
 	gorm.Model    `json:"-"`
 }
 
 type HousePhotoRequest struct {
 	PhotoUrl *multipart.FileHeader `form:"photo_url" validate:"required"`
 }
+
 
 type HouseParams struct {
 	Search string

@@ -37,4 +37,7 @@ var (
 	ErrUploadImage              = errors.New("failed to upload image")
 	ErrFailedToViewHouseList    = errors.New("failed to view house list")
 	ErrFailedToGetHousePhoto    = errors.New("failed to get house photo")
+	ErrFailedToGetHouseDetail   = errors.New("failed to get house detail")
+	ErrFailedToUpdateHouse      = errors.New("failed to update house")
+	ErrFailedToDeleteHousePhoto = errors.New("failed to delete house photo")
 )

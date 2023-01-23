@@ -1,6 +1,8 @@
 package usecase
 
 import (
+	"strings"
+
 	"git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/dto"
 	"git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/entity"
 	"git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/repository"
@@ -10,8 +12,10 @@ import (
 
 type HouseUseCase interface {
 	CreateHouse(req dto.CreateHouseRequest, userID uint) (*entity.House, error)
-	ViewHouseListHost(userId uint) ([]entity.House, error)
+	ViewHouseListHost(userId uint, query *entity.HouseParams) ([]entity.House, int64, int, error)
 	ViewHouseList(query *entity.HouseParams) ([]entity.House, int64, int, error)
+	GetHouseDetail(id uint) (*entity.House, error)
+	UpdateHouse(id uint, req dto.UpdateHouseRequest) (*entity.House, error)
 }
 
 type houseUsecaseImpl struct {
@@ -58,13 +62,13 @@ func (u *houseUsecaseImpl) CreateHouse(req dto.CreateHouseRequest, userID uint) 
 	return res, nil
 }
 
-func (u *houseUsecaseImpl) ViewHouseListHost(userId uint) ([]entity.House, error) {
-	res, err := u.houseRepo.ViewHouseListHost(userId)
+func (u *houseUsecaseImpl) ViewHouseListHost(userId uint, query *entity.HouseParams) ([]entity.House, int64, int, error) {
+	res, totalRows, totalPages, err := u.houseRepo.ViewHouseListHost(userId, query)
 	if err != nil {
-		return nil, err
+		return nil, 0, 0, err
 	}
 
-	return res, nil
+	return res, totalRows, totalPages, nil
 }
 
 func (u *houseUsecaseImpl) ViewHouseList(query *entity.HouseParams) ([]entity.House, int64, int, error) {
@@ -74,4 +78,60 @@ func (u *houseUsecaseImpl) ViewHouseList(query *entity.HouseParams) ([]entity.Ho
 	}
 
 	return res, totalRows, totalPages, nil
+}
+
+func (u *houseUsecaseImpl) GetHouseDetail(id uint) (*entity.House, error) {
+	res, err := u.houseRepo.GetHouseById(id)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
+func (u *houseUsecaseImpl) UpdateHouse(id uint, req dto.UpdateHouseRequest) (*entity.House, error) {
+	house, err := u.houseRepo.GetHouseById(id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	deletePhotoId := make(map[int]bool)
+	for _, photo := range req.PhotoID {
+		deletePhotoId[photo] = true
+	}
+
+	for idx, photo := range house.HousePhoto {
+		if _, ok := deletePhotoId[int(photo.ID)]; ok {
+			str := strings.Split(photo.PhotoURL, "/")
+			publicId := strings.Split(str[len(str)-1], ".")[0]
+			media.DeleteImageHelper(publicId)
+			house.HousePhoto = append(house.HousePhoto[:idx], house.HousePhoto[idx+1:]...)
+		}
+
+	}
+
+	house.Name = req.Name
+	house.PricePerNight = req.PricePerNight
+	house.Description = req.Description
+	house.MaxGuests = req.MaxGuests
+	for _, photo := range req.HousePhoto {
+		file, err := photo.Open()
+		if err != nil {
+			return nil, errResp.ErrOpenFileHeader
+		}
+		url, err2 := media.ImageUploadHelper(file)
+		if err2 != nil {
+			return nil, errResp.ErrUploadImage
+		}
+		house.HousePhoto = append(house.HousePhoto, entity.HousePhoto{PhotoURL: url})
+		file.Close()
+	}
+
+	res, err := u.houseRepo.UpdateHouse(*house)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
 }
