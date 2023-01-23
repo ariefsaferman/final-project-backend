@@ -15,6 +15,7 @@ type HouseRepository interface {
 	ViewHouseList(query *entity.HouseParams) ([]entity.House, int64, int, error)
 	GetHouseById(id uint) (*entity.House, error)
 	UpdateHouse(req entity.House) (*entity.House, error)
+	DeleteHouse(id uint) error
 }
 
 type houseRepositoryImpl struct {
@@ -107,4 +108,22 @@ func (r *houseRepositoryImpl) UpdateHouse(req entity.House) (*entity.House, erro
 		return nil, errResp.ErrFailedToUpdateHouse
 	}
 	return &req, nil
+}
+
+func (r *houseRepositoryImpl) DeleteHouse(id uint) error {
+	err := r.db.Transaction(func(tx *gorm.DB) error {
+		if err := r.housePhotoRepo.DeleteHousePhotoByHouseId(tx, id); err != nil {
+			return err
+		}
+
+		if err := tx.Delete(&entity.House{}, id).Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
+	if err != nil {
+		return errResp.ErrFailedToDeleteHouse
+	}
+	return nil
 }

@@ -42,6 +42,7 @@ func NewRouter(cfg *RouterConfig) *gin.Engine {
 	r.PUT("/update-role", middleware.Authenticated, middleware.AuthorizeUserOrHost, h.UpdateRole)
 	r.POST("/top-up", middleware.Authenticated, middleware.AuthorizeUserOrHost, h.TopUp)
 	r.PATCH("/houses/:id", middleware.Authenticated, middleware.AuthorizeHost, h.UpdateHouse)
+	r.DELETE("/houses/:id", middleware.Authenticated, middleware.AuthorizeHost, h.DeleteHouse)
 	r.GET("/houses", h.GetHouseList)
 	r.GET("/houses/:id", h.GetHouseDetail)
 

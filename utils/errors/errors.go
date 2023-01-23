@@ -40,4 +40,5 @@ var (
 	ErrFailedToGetHouseDetail   = errors.New("failed to get house detail")
 	ErrFailedToUpdateHouse      = errors.New("failed to update house")
 	ErrFailedToDeleteHousePhoto = errors.New("failed to delete house photo")
+	ErrFailedToDeleteHouse      = errors.New("failed to delete house")
 )

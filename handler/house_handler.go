@@ -114,3 +114,17 @@ func (h *Handler) UpdateHouse(c *gin.Context) {
 	}
 	response.SendSuccess(c, http.StatusOK, res)
 }
+
+func (h *Handler) DeleteHouse(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	err := h.houseUsecase.DeleteHouse(uint(id))
+	if err != nil {
+		if errors.Is(err, errResp.ErrFailedToDeleteHouse) {
+			response.SendError(c, http.StatusBadRequest, errResp.ErrCodeBadRequest, err.Error())
+			return
+		}
+		response.SendError(c, http.StatusInternalServerError, errResp.ErrCodeInternalServerError, errResp.ErrInternalServerError.Error())
+		return
+	}
+	response.SendSuccess(c, http.StatusOK, "House Deleted")
+}

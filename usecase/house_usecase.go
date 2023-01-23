@@ -16,6 +16,7 @@ type HouseUseCase interface {
 	ViewHouseList(query *entity.HouseParams) ([]entity.House, int64, int, error)
 	GetHouseDetail(id uint) (*entity.House, error)
 	UpdateHouse(id uint, req dto.UpdateHouseRequest) (*entity.House, error)
+	DeleteHouse(id uint) error
 }
 
 type houseUsecaseImpl struct {
@@ -134,4 +135,25 @@ func (u *houseUsecaseImpl) UpdateHouse(id uint, req dto.UpdateHouseRequest) (*en
 	}
 
 	return res, nil
+}
+
+func (u *houseUsecaseImpl) DeleteHouse(id uint) error {
+	house, err := u.houseRepo.GetHouseById(id)
+
+	if err != nil {
+		return err
+	}
+
+	for _, photo := range house.HousePhoto {
+		str := strings.Split(photo.PhotoURL, "/")
+		publicId := strings.Split(str[len(str)-1], ".")[0]
+		media.DeleteImageHelper(publicId)
+	}
+
+	err = u.houseRepo.DeleteHouse(id)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
