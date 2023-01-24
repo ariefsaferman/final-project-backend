@@ -9,8 +9,23 @@ type TopUpRequest struct {
 
 func (r *TopUpRequest) ReqToTransaction(userID int) entity.Transaction {
 	return entity.Transaction{
-		UserID: 		uint(userID),
+		UserID:          uint(userID),
 		Balance:         r.Amount,
 		SourceOfFundsId: r.SourceOfFundId,
+	}
+}
+
+type TopUpResponse struct {
+	UserId          uint    `json:"user_id"`
+	Balance         float64 `json:"balance"`
+	SourceOfFundsId uint    `json:"source_of_funds_id"`
+	Message         string  `json:"message,omitempty"`
+}
+
+func (r *TopUpResponse) TransactionToRes(transaction entity.Transaction) TopUpResponse {
+	return TopUpResponse{
+		UserId:          transaction.UserID,
+		Balance:         transaction.Balance,
+		SourceOfFundsId: transaction.SourceOfFundsId,
 	}
 }

@@ -5,5 +5,6 @@ type PlayGameRequest struct {
 }
 
 type PlayGameResponse struct {
-	Amount float64 `json:"amount"`
+	Reward  float64 `json:"reward"`
+	Message string  `json:"message,omitempty"`
 }

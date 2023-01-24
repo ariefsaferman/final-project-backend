@@ -11,3 +11,5 @@ type Transaction struct {
 	Balance         float64
 	gorm.Model      `json:"-"`
 }
+
+

@@ -61,6 +61,7 @@ func createRouter() *gin.Engine {
 		TransactionRepo:  transactionRepo,
 		WalletRepo:       walletRepo,
 		SourceOfFundRepo: sourceOfFundRepo,
+		GameRepo:         gameRepo,
 	})
 
 	houseUseCase := usecase.NewHouseUsecase(&usecase.HouseUConfig{

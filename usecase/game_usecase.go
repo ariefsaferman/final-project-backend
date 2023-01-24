@@ -30,19 +30,25 @@ func NewGameUseCase(config *GameUConfig) GameUseCase {
 }
 
 func (u *gameUseCaseImpl) PlayGame(req *dto.PlayGameRequest, userId uint) (*dto.PlayGameResponse, error) {
-	min := 0
-	max := 1000000
 	gift := make([]int, 2)
 	var err error
+	var res *dto.PlayGameResponse
 
 	//random number
 	rand.Seed(time.Now().UnixNano())
-	gift[0] = rand.Intn(max-min) + min
-	gift[1] = rand.Intn(max-min) + min
+	gift[0] = rand.Intn(10000-0) + 0
+	gift[1] = rand.Intn(1000000-100000) + 100000
+	rand.Shuffle(len(gift), func(i, j int) { gift[i], gift[j] = gift[j], gift[i] })
+
+	//get game chance
+	game, err := u.gameRepo.GetChance(userId)
+	if err != nil {
+		return nil, err
+	}
 
 	for i := 0; i < len(gift); i++ {
 		if i == *req.SelectedInput {
-			_, err = u.gameRepo.PlayGame(userId, float64(gift[i]))
+			res, err = u.gameRepo.PlayGame(game, float64(gift[i]))
 			if err != nil {
 				return nil, err
 			}
@@ -50,9 +56,7 @@ func (u *gameUseCaseImpl) PlayGame(req *dto.PlayGameRequest, userId uint) (*dto.
 		}
 	}
 
-	res := &dto.PlayGameResponse{
-		Amount: float64(gift[*req.SelectedInput]),
-	}
+	// res.Reward = float64(gift[*req.SelectedInput])
 
 	return res, nil
 }
