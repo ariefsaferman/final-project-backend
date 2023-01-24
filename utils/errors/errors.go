@@ -41,4 +41,7 @@ var (
 	ErrFailedToUpdateHouse      = errors.New("failed to update house")
 	ErrFailedToDeleteHousePhoto = errors.New("failed to delete house photo")
 	ErrFailedToDeleteHouse      = errors.New("failed to delete house")
+	ErrUpdateGameChance         = errors.New("failed to update game chance")
+	ErrGameChanceNotFound       = errors.New("game chance not with that user_id is not found")
+	ErrGameChanceNotEnough      = errors.New("game chance not enough")
 )

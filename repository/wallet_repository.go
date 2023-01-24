@@ -9,6 +9,7 @@ import (
 type WalletRepository interface {
 	TopUp(tx *gorm.DB, walletID uint, amount float64) error
 	CreateWallet(tx *gorm.DB, id uint) (*entity.Wallet, error)
+	Reward(tx *gorm.DB, userID uint, amount float64) error
 }
 
 type walletRepositoryImpl struct {
@@ -38,7 +39,20 @@ func (r *walletRepositoryImpl) CreateWallet(tx *gorm.DB, id uint) (*entity.Walle
 func (r *walletRepositoryImpl) TopUp(tx *gorm.DB, userID uint, amount float64) error {
 	err := tx.Model(&entity.Wallet{}).Where("user_id = ?", userID).Update("balance", gorm.Expr("balance + ?", amount))
 	if err.Error != nil {
-		return err.Error
+		return errors.ErrFailedToUpdateWallet
+	}
+
+	if err.RowsAffected == 0 {
+		return errors.ErrWalletNotFound
+	}
+
+	return nil
+}
+
+func (r *walletRepositoryImpl) Reward(tx *gorm.DB, userID uint, amount float64) error {
+	err := tx.Model(&entity.Wallet{}).Where("user_id = ?", userID).Update("balance", gorm.Expr("balance + ?", amount))
+	if err.Error != nil {
+		return errors.ErrFailedToUpdateWallet
 	}
 
 	if err.RowsAffected == 0 {

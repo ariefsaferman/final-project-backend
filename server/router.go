@@ -15,6 +15,7 @@ type RouterConfig struct {
 	UserUseCase        usecase.UserUsecase
 	TransactionUseCase usecase.TransactionUseCase
 	HouseUsecase       usecase.HouseUseCase
+	GameUseCase        usecase.GameUseCase
 }
 
 func NewRouter(cfg *RouterConfig) *gin.Engine {
@@ -23,6 +24,7 @@ func NewRouter(cfg *RouterConfig) *gin.Engine {
 		UserUsecase:        cfg.UserUseCase,
 		TransactionUsecase: cfg.TransactionUseCase,
 		HouseUsecase:       cfg.HouseUsecase,
+		GameUseCase:        cfg.GameUseCase,
 	})
 
 	r.NoRoute(func(c *gin.Context) {
@@ -45,6 +47,7 @@ func NewRouter(cfg *RouterConfig) *gin.Engine {
 	r.DELETE("/houses/:id", middleware.Authenticated, middleware.AuthorizeHost, h.DeleteHouse)
 	r.GET("/houses", h.GetHouseList)
 	r.GET("/houses/:id", h.GetHouseDetail)
+	r.POST("/play-game", middleware.Authenticated, middleware.AuthorizeUserOrHost, h.PlayGame)
 
 	host := r.Group("/host")
 	{

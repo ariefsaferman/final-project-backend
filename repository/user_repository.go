@@ -15,6 +15,7 @@ type UserRepository interface {
 	GetProfile(id int) (*entity.User, error)
 	UpdateProfile(user entity.User) (string, error)
 	UpdateRole(user entity.User) (string, error)
+	GetUserByID(tx *gorm.DB, id uint) (*entity.User, error)
 }
 
 type userRepositoryImpl struct {
@@ -118,4 +119,13 @@ func (r *userRepositoryImpl) UpdateRole(user entity.User) (string, error) {
 	message := "successfuly update role"
 
 	return message, nil
+}
+
+func (r *userRepositoryImpl) GetUserByID(tx *gorm.DB, id uint) (*entity.User, error) {
+	var user entity.User
+	err := tx.Where("id = ?", id).First(&user).Error
+	if err != nil {
+		return nil, errors.ErrUserNotFound
+	}
+	return &user, nil
 }

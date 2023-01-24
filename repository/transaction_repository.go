@@ -7,6 +7,7 @@ import (
 
 type TransactionRepository interface {
 	TopUp(req entity.Transaction) (*entity.Transaction, error)
+	TopUpWithReward(tx *gorm.DB, req entity.Transaction) (*entity.Transaction, error)
 }
 
 type transactionRepositoryImpl struct {
@@ -40,6 +41,16 @@ func (r *transactionRepositoryImpl) TopUp(req entity.Transaction) (*entity.Trans
 		return nil
 	})
 
+	if err != nil {
+		return nil, err
+	}
+
+	return &req, nil
+}
+
+func (r *transactionRepositoryImpl) TopUpWithReward(tx *gorm.DB, req entity.Transaction) (*entity.Transaction, error) {
+
+	err := tx.Create(&req).Error
 	if err != nil {
 		return nil, err
 	}
