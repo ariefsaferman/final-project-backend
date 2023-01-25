@@ -7,6 +7,7 @@ type Handler struct {
 	transactionUsecase usecase.TransactionUseCase
 	houseUsecase       usecase.HouseUseCase
 	gameUseCase        usecase.GameUseCase
+	reservationUseCase usecase.ReservationUseCase
 }
 
 type Config struct {
@@ -14,6 +15,7 @@ type Config struct {
 	TransactionUsecase usecase.TransactionUseCase
 	HouseUsecase       usecase.HouseUseCase
 	GameUseCase        usecase.GameUseCase
+	ReservationUseCase usecase.ReservationUseCase
 }
 
 func NewHandler(config *Config) *Handler {
@@ -22,5 +24,6 @@ func NewHandler(config *Config) *Handler {
 		transactionUsecase: config.TransactionUsecase,
 		houseUsecase:       config.HouseUsecase,
 		gameUseCase:        config.GameUseCase,
+		reservationUseCase: config.ReservationUseCase,
 	}
 }

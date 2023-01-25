@@ -12,6 +12,10 @@ import (
 
 func createRouter() *gin.Engine {
 
+	pickUpRepo := repository.NewPickUpRepository(&repository.PickUpRConfig{
+		DB: db.Get(),
+	})
+
 	housePhotoRepo := repository.NewHousePhotoRepository(&repository.HousePhotoRConfig{
 		DB: db.Get(),
 	})
@@ -46,6 +50,14 @@ func createRouter() *gin.Engine {
 		DB: db.Get(),
 	})
 
+	reservationRepo := repository.NewReservationRepository(&repository.ReservationRConfig{
+		DB:              db.Get(),
+		TransactionRepo: transactionRepo,
+		WalletRepo:      walletRepo,
+		HouseRepo:       houseRepo,
+		PickUpRepo:      pickUpRepo,
+	})
+
 	userUsecase := usecase.NewUserUsecase(&usecase.UserUConfig{
 		UserRepo:      userRepo,
 		BcryptUseCase: auth.AuthUtilImpl{},
@@ -68,11 +80,18 @@ func createRouter() *gin.Engine {
 		HouseRepo: houseRepo,
 	})
 
+	reservationUseCase := usecase.NewReservationUseCase(&usecase.ReservationUConfig{
+		ReservationRepo: reservationRepo,
+		WalletRepo:      walletRepo,
+		HouseRepo:       houseRepo,
+	})
+
 	return NewRouter(&RouterConfig{
 		UserUseCase:        userUsecase,
 		TransactionUseCase: transactionUsecase,
 		HouseUsecase:       houseUseCase,
 		GameUseCase:        gameUseCase,
+		ReservationUseCase: reservationUseCase,
 	})
 }
 

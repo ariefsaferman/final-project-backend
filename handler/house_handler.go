@@ -128,3 +128,4 @@ func (h *Handler) DeleteHouse(c *gin.Context) {
 	}
 	response.SendSuccess(c, http.StatusOK, "House Deleted")
 }
+

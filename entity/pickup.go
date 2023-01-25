@@ -1,11 +1,21 @@
 package entity
 
-import "gorm.io/gorm"
+import (
+	"time"
 
-type Pickup struct {
-	ID uint
-	UserID uint
-	ReservationsID uint
+	"gorm.io/gorm"
+)
+
+type PickUp struct {
+	ID             uint
+	UserID         uint
+	ReservationID  uint
 	PickupStatusID uint
-	gorm.Model 
+	CreatedAt      time.Time      `json:"created_at"`
+	UpdatedAt      time.Time      `json:"updated_at"`
+	DeletedAt      gorm.DeletedAt `json:"deleted_at"`
+}
+
+func (PickUp) TableName() string {
+	return "pickups"
 }

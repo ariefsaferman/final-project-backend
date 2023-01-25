@@ -16,6 +16,7 @@ type HouseRepository interface {
 	GetHouseById(id uint) (*entity.House, error)
 	UpdateHouse(req entity.House) (*entity.House, error)
 	DeleteHouse(id uint) error
+	CheckIfRentOwnHouse(userId, houseId uint) error
 }
 
 type houseRepositoryImpl struct {
@@ -87,7 +88,7 @@ func (r *houseRepositoryImpl) GetHouseById(id uint) (*entity.House, error) {
 	var house entity.House
 	err := r.db.Preload("HousePhoto").Where("id = ?", id).First(&house).Error
 	if err != nil {
-		return nil, errResp.ErrFailedToGetHouseDetail
+		return nil, errResp.ErrHouseNotFound
 	}
 	return &house, nil
 }
@@ -124,6 +125,15 @@ func (r *houseRepositoryImpl) DeleteHouse(id uint) error {
 	})
 	if err != nil {
 		return errResp.ErrFailedToDeleteHouse
+	}
+	return nil
+}
+
+func (r *houseRepositoryImpl) CheckIfRentOwnHouse(userId, houseId uint) error {
+	var house entity.House
+	err := r.db.Where("user_id = ? AND id = ?", userId, houseId).First(&house).Error
+	if err == nil {
+		return errResp.ErrRentOwnHouse
 	}
 	return nil
 }

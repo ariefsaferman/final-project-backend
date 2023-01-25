@@ -49,3 +49,13 @@ func (h *Handler) TopUp(c *gin.Context) {
 	}
 	response.SendSuccess(c, http.StatusOK, res)
 }
+
+func (h *Handler) GetTransaction(c *gin.Context) {
+	userID := c.GetInt("userID")
+	res, err := h.transactionUsecase.GetTransaction(userID)
+	if err != nil {
+		response.SendError(c, http.StatusInternalServerError, errResp.ErrCodeInternalServerError, errResp.ErrInternalServerError.Error())
+		return
+	}
+	response.SendSuccess(c, http.StatusOK, res)
+}

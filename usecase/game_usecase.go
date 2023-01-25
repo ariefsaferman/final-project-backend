@@ -55,8 +55,5 @@ func (u *gameUseCaseImpl) PlayGame(req *dto.PlayGameRequest, userId uint) (*dto.
 			break
 		}
 	}
-
-	// res.Reward = float64(gift[*req.SelectedInput])
-
 	return res, nil
 }

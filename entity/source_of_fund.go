@@ -3,7 +3,7 @@ package entity
 import "gorm.io/gorm"
 
 type SourceOfFund struct {
-	ID uint
-	Name string
-	gorm.Model 
+	ID         uint   `json:"id"`
+	Name       string `json:"name"`
+	gorm.Model `json:"-"`
 }

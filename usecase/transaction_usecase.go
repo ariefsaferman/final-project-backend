@@ -4,11 +4,13 @@ import (
 	"strconv"
 
 	"git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/dto"
+	"git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/entity"
 	"git.garena.com/sea-labs-id/batch-05/arief-saferman/house-booking/repository"
 )
 
 type TransactionUseCase interface {
 	TopUp(req dto.TopUpRequest, UserID int) (*dto.TopUpResponse, error)
+	GetTransaction(userID int) ([]*entity.Transaction, error)
 }
 
 type transactionUsecaseImpl struct {
@@ -68,4 +70,12 @@ func (u *transactionUsecaseImpl) TopUp(req dto.TopUpRequest, userID int) (*dto.T
 	}
 
 	return &transResp, nil
+}
+
+func (u *transactionUsecaseImpl) GetTransaction(userID int) ([]*entity.Transaction, error) {
+	transactions, err := u.transactionRepo.GetTransactionByUserId(uint(userID))
+	if err != nil {
+		return nil, err
+	}
+	return transactions, nil
 }
