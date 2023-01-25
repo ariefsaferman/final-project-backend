@@ -39,11 +39,16 @@ func NewRouter(cfg *RouterConfig) *gin.Engine {
 		admin.POST("/login", h.AdminLogin)
 	}
 
+	user := r.Group("/user", middleware.Authenticated, middleware.AuthorizeUserOrHost)
+	{
+		user.GET("/profile", h.GetProfile)
+		user.PUT("/update-profile", h.UpdateProfile)
+		user.PUT("/update-role", h.UpdateRole)
+
+	}
+
 	r.POST("/login", h.Login)
 	r.POST("/register", h.Register)
-	r.GET("/profile", middleware.Authenticated, middleware.AuthorizeUserOrHost, h.GetProfile)
-	r.PUT("/update-profile", middleware.Authenticated, middleware.AuthorizeUserOrHost, h.UpdateProfile)
-	r.PUT("/update-role", middleware.Authenticated, middleware.AuthorizeUserOrHost, h.UpdateRole)
 	r.POST("/top-up", middleware.Authenticated, middleware.AuthorizeUserOrHost, h.TopUp)
 	r.PATCH("/houses/:id", middleware.Authenticated, middleware.AuthorizeHost, h.UpdateHouse)
 	r.DELETE("/houses/:id", middleware.Authenticated, middleware.AuthorizeHost, h.DeleteHouse)

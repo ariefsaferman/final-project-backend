@@ -2,6 +2,7 @@ package entity
 
 import (
 	"mime/multipart"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -23,13 +24,14 @@ type HousePhotoRequest struct {
 	PhotoUrl *multipart.FileHeader `form:"photo_url" validate:"required"`
 }
 
-
 type HouseParams struct {
-	Search string
-	SortBy string
-	Sort   string
-	Limit  int
-	Page   int
+	Search       string
+	SortBy       string
+	Sort         string
+	Limit        int
+	Page         int
+	CheckInDate  time.Time
+	CheckOutDate time.Time
 }
 
 func NewHouseParams(search, sortBy, sort string, limit, page int) *HouseParams {
