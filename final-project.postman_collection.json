@@ -1,0 +1,733 @@
+{
+	"info": {
+		"_postman_id": "d91228ca-3dc7-4727-944a-a3af4613f83e",
+		"name": "final-project",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24688309"
+	},
+	"item": [
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "AdminLogin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"acong@gmail.com\",\n    \"password\": \"password\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/admin/login",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AdminRegister",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\" : \"admin2@gmail.com\",\n    \"password\": \"password\",\n    \"full_name\": \"admin2\",\n    \"address\": \"pasar rebo\",\n    \"city_id\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/admin/register",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const token = pm.response.json().data.access_token ",
+									"console.log(token)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"angga@gmail.com\",\n    \"password\": \"password\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/login",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\" : \"arief.saferman@gmail.com\",\n    \"password\": \"password\",\n    \"full_name\": \"Arief Saferman\",\n    \"address\": \"pasar rebo\",\n    \"city_id\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/register",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetProfile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo5LCJlbWFpbCI6ImFyaWVmLnNhZmVybWFuQGdtYWlsLmNvbSIsInJvbGVfaWQiOjIsImlzcyI6IkhvdXNlQm9va2luZyIsImV4cCI6MTY3NDA5ODc4OCwiaWF0IjoxNjc0MDk1MTg4fQ.tgJMNuBOVqrBMaKyu25b_am-iXNZWvsvp6jp3hhBZiA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/profile",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateProfile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo5LCJlbWFpbCI6ImFyaWVmLnNhZmVybWFuQGdtYWlsLmNvbSIsInJvbGVfaWQiOjIsImlzcyI6IkhvdXNlQm9va2luZyIsImV4cCI6MTY3NDA5ODc4OCwiaWF0IjoxNjc0MDk1MTg4fQ.tgJMNuBOVqrBMaKyu25b_am-iXNZWvsvp6jp3hhBZiA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"full_name\": \"ARIEF SAFERMAN\",\n    \"password\": \"password\",\n    \"address\": \"cipayung\"\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/update-profile",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"update-profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateRoleToHost",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo5LCJlbWFpbCI6ImFyaWVmLnNhZmVybWFuQGdtYWlsLmNvbSIsInJvbGVfaWQiOjIsImlzcyI6IkhvdXNlQm9va2luZyIsImV4cCI6MTY3NDA5ODc4OCwiaWF0IjoxNjc0MDk1MTg4fQ.tgJMNuBOVqrBMaKyu25b_am-iXNZWvsvp6jp3hhBZiA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"role_id\": 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/update-role",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"update-role"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TopUp",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMCwiZW1haWwiOiJtZWxpc2FAZ21haWwuY29tIiwicm9sZV9pZCI6Miwid2FsbGV0X2lkIjowLCJpc3MiOiJIb3VzZUJvb2tpbmciLCJleHAiOjE2NzQxMjE3MDgsImlhdCI6MTY3NDExODEwOH0.u9B8RyumgOV85EJrITUxsLLX_lqFJhA1sWP8_mbBTUU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\": 500000000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/top-up",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"top-up"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PlayGame",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/play-game",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"play-game"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetTransaction",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "PostReservation",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyNywiZW1haWwiOiJhbmdnYUBnbWFpbC5jb20iLCJyb2xlX2lkIjoyLCJ3YWxsZXRfaWQiOjAsImlzcyI6IkhvdXNlQm9va2luZyIsImV4cCI6MTY3NDYyNjU0OSwiaWF0IjoxNjc0NjIyOTQ5fQ.-Egh8jaOWzrGoM05jdoCAHEQjtZj_PM6M8GgdlqGuoc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"house_id\": 15, \n    \"check_in\": \"2023-06-09T00:00:00Z\",\n    \"check_out\": \"2023-06-10T00:00:00Z\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/reservation",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"reservation"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Host",
+			"item": [
+				{
+					"name": "UploadHouse",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxOSwiZW1haWwiOiJtZXJpc2FAZ21haWwuY29tIiwicm9sZV9pZCI6Mywid2FsbGV0X2lkIjowLCJpc3MiOiJIb3VzZUJvb2tpbmciLCJleHAiOjE2NzQzNzAxMjUsImlhdCI6MTY3NDM2NjUyNX0.ImJy1GJjYbCUHhJgeDYAe2uIHnwWTSMm1AckdVmqvg8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "house",
+									"type": "text"
+								},
+								{
+									"key": "city_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "price_per_night",
+									"value": "300000",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "house of love",
+									"type": "text"
+								},
+								{
+									"key": "max_guest",
+									"value": "3",
+									"type": "text"
+								},
+								{
+									"key": "house_photo",
+									"type": "file",
+									"src": "/home/ariefsaferman/Pictures/Screenshots/interaction.png"
+								},
+								{
+									"key": "house_photo",
+									"type": "file",
+									"src": "/home/ariefsaferman/Pictures/Screenshots/Screenshot from 2022-11-24 10-24-26.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:8080/host/upload-house",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"host",
+								"upload-house"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetHouse",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxOSwiZW1haWwiOiJtZXJpc2FAZ21haWwuY29tIiwicm9sZV9pZCI6Mywid2FsbGV0X2lkIjowLCJpc3MiOiJIb3VzZUJvb2tpbmciLCJleHAiOjE2NzQ0NTE5MDMsImlhdCI6MTY3NDQ0ODMwM30.ruXHHU2jvTxC7gS9YxaIkUbMfIcl0Mr0c7dDLIJ-oOs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "house",
+									"type": "text"
+								},
+								{
+									"key": "city_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "price_per_night",
+									"value": "300000",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "house of love",
+									"type": "text"
+								},
+								{
+									"key": "max_guest",
+									"value": "3",
+									"type": "text"
+								},
+								{
+									"key": "house_photo",
+									"type": "file",
+									"src": "/home/ariefsaferman/Pictures/Screenshots/interaction.png"
+								},
+								{
+									"key": "house_photo",
+									"type": "file",
+									"src": "/home/ariefsaferman/Pictures/Screenshots/Screenshot from 2022-11-24 10-24-26.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:8080/host/houses",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"host",
+								"houses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateHouse",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "price_per_night",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "max_guest",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "house_photo",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "photo_id",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:8080/houses/14",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"houses",
+								"14"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteHouse",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/houses/17",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"houses",
+								"17"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "GetHouseWithParams",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxOSwiZW1haWwiOiJtZXJpc2FAZ21haWwuY29tIiwicm9sZV9pZCI6Mywid2FsbGV0X2lkIjowLCJpc3MiOiJIb3VzZUJvb2tpbmciLCJleHAiOjE2NzQ0NTU4MjAsImlhdCI6MTY3NDQ1MjIyMH0.Zy0YDHS6L19YqRN0bFAKAUtxFSRrx56eMxIYKUK2E1o",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "house",
+							"type": "text"
+						},
+						{
+							"key": "city_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "price_per_night",
+							"value": "300000",
+							"type": "text"
+						},
+						{
+							"key": "description",
+							"value": "house of love",
+							"type": "text"
+						},
+						{
+							"key": "max_guest",
+							"value": "3",
+							"type": "text"
+						},
+						{
+							"key": "house_photo",
+							"type": "file",
+							"src": "/home/ariefsaferman/Pictures/Screenshots/interaction.png"
+						},
+						{
+							"key": "house_photo",
+							"type": "file",
+							"src": "/home/ariefsaferman/Pictures/Screenshots/Screenshot from 2022-11-24 10-24-26.png"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8080/houses?sortBy=price_per_night&sort=asc&limit=10",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"houses"
+					],
+					"query": [
+						{
+							"key": "sortBy",
+							"value": "price_per_night"
+						},
+						{
+							"key": "sort",
+							"value": "asc"
+						},
+						{
+							"key": "limit",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetHouses",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyNywiZW1haWwiOiJhbmdnYUBnbWFpbC5jb20iLCJyb2xlX2lkIjoyLCJ3YWxsZXRfaWQiOjAsImlzcyI6IkhvdXNlQm9va2luZyIsImV4cCI6MTY3NDYzMDMzNSwiaWF0IjoxNjc0NjI2NzM1fQ.O1LcAw3jZzGnWa9fFbM30tYF4gXMWAjIRQj2aQuOejA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "house",
+							"type": "text"
+						},
+						{
+							"key": "city_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "price_per_night",
+							"value": "300000",
+							"type": "text"
+						},
+						{
+							"key": "description",
+							"value": "house of love",
+							"type": "text"
+						},
+						{
+							"key": "max_guest",
+							"value": "3",
+							"type": "text"
+						},
+						{
+							"key": "house_photo",
+							"type": "file",
+							"src": "/home/ariefsaferman/Pictures/Screenshots/interaction.png"
+						},
+						{
+							"key": "house_photo",
+							"type": "file",
+							"src": "/home/ariefsaferman/Pictures/Screenshots/Screenshot from 2022-11-24 10-24-26.png"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8080/houses",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"houses"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetHouseById",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "token",
+			"value": ""
+		}
+	]
+}
